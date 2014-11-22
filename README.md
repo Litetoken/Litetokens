@@ -1,41 +1,41 @@
-# The Bluejudy Protocol
+# The Czarcraft Protocol
 
 ## Summary
 
-Bluejudy is a suite of financial tools in a protocol built on top of the
-Worldcoin blockchain and using the blockchain as a service for the reliable
+Czarcraft is a suite of financial tools in a protocol built on top of the
+Litecoin blockchain and using the blockchain as a service for the reliable
 publication and timestamping of its messages.
 
-The reference implementation is `bluejudyd`, which is hosted at
-<https://github.com/Bluejudy/bluejudyd>.
+The reference implementation is `czarcraftd`, which is hosted at
+<https://github.com/Czarcraft/czarcraftd>.
 
-This document describes exclusively the latest version of the Bluejudy
-protocol. For historical protocol changes, see the bluejudyd CHANGELOG and
+This document describes exclusively the latest version of the Czarcraft
+protocol. For historical protocol changes, see the czarcraftd CHANGELOG and
 earlier versions of this document.
 
 
 ## Transactions
 
-Bluejudy messages have the following components:
+Czarcraft messages have the following components:
 * Source addresses
 * Destination addresses (optional)
-* A quantity of worldcoins sent from the sources to the destinations, if it exists.
-* A fee, in worldcoins, paid to the Worldcoin miners who include the transaction in
+* A quantity of litecoins sent from the sources to the destinations, if it exists.
+* A fee, in litecoins, paid to the Litecoin miners who include the transaction in
   a block.
 * Some ‘data’, imbedded in specially constructed transaction outputs.
 
-Every Worldcoin transaction carrying a Bluejudy transaction has the following
+Every Litecoin transaction carrying a Czarcraft transaction has the following
 possible outputs: zero or more destination outputs, zero or more data outputs,
 and optional change outputs. All data outputs follow all destination outputs.
 Change outputs (outputs after the last data output) have no significance.
 
-For identification purposes, every Bluejudy transaction’s ‘data’ field is
-prefixed by the string ‘CNTRPRTY’, encoded in UTF‐8. This string is long enough
+For identification purposes, every Czarcraft transaction’s ‘data’ field is
+prefixed by the string ‘CZRCRAFT’, encoded in UTF‐8. This string is long enough
 that transactions with outputs containing pseudo‐random data cannot be mistaken
-for valid Bluejudy transactions . In testing (i.e. using the TESTCOIN
-Bluejudy network on any blockchain), this string is ‘XX’.
+for valid Czarcraft transactions . In testing (i.e. using the TESTCOIN
+Czarcraft network on any blockchain), this string is ‘XX’.
 
-Bluejudy data may be stored in three different types of outputs, or in some
+Czarcraft data may be stored in three different types of outputs, or in some
 combinations of those formats. All of the data is obfuscated by ARC4 encryption
 using the public key of the first sender as the encryption key.
 
@@ -47,13 +47,13 @@ length byte.
 The data may also be stored in `OP_RETURN` outputs or as fake pubkeyhashes.
 
 The existence of the destination outputs, and the significance of the size of
-the Worldcoin fee and the Worldcoins transacted, depend on the Bluejudy message
+the Litecoin fee and the Litecoins transacted, depend on the Czarcraft message
 type, which is determined by the four bytes in the data field that immediately
 follow the identification prefix. The rest of the data have a formatting
 specific to the message type, described in the source code.
 
-The sources and destinations of a Bluejudy transaction are Worldcoin
-addresses, and may be either `OP_CHECKSIG` and `OP_CHECKMULTISIG` Worldcoin
+The sources and destinations of a Czarcraft transaction are Litecoin
+addresses, and may be either `OP_CHECKSIG` and `OP_CHECKMULTISIG` Litecoin
 ScriptPubkeys.
 
 All messages are parsed in order, one at a time, ignoring block boundaries.
@@ -62,13 +62,13 @@ Orders, bets, order matches, bet matches and rock‐paper‐scissor matches are
 expired at the end of blocks.
 
 
-## Non‐Bluejudy transactions
+## Non‐Czarcraft transactions
 
-bluejudyd supports the construction of two kinds of transactions that are
-not themselves considered Bluejudy transactions:
+czarcraftd supports the construction of two kinds of transactions that are
+not themselves considered Czarcraft transactions:
 
-* WDC sends
-* WDC dividends to Bluejudy assets
+* LTC sends
+* LTC dividends to Czarcraft assets
 
 Neither of these two transactions is constructed with a data field.
 
@@ -84,7 +84,7 @@ No matching for orders, bets, rps.
 
 ## Assets
 
-All assets except WDC and XBJ have the following properties:
+All assets except LTC and DLA have the following properties:
 
 * Asset name
 * Asset ID
@@ -99,7 +99,7 @@ All assets except WDC and XBJ have the following properties:
 
 Asset names are strings of uppercase ASCII characters that, when encoded as a
 decimal integer, are greater than 26^3 and less than or equal to 256^8: all
-asset names, other than ‘WDC’ and ‘XBJ’ must be at least four letters long;
+asset names, other than ‘LTC’ and ‘DLA’ must be at least four letters long;
 asset names may not begin with the character ‘A’. Thus, some thirteen‐character
 asset names are valid, but no fourteen‐character names are.
 
@@ -108,14 +108,14 @@ divisible to eight decimal places. Assets also come with descriptions, which
 may be changed at any time.
 
 Assets may be ‘callable’: callable assets may be forcibly ‘called back’ by
-their present issuer, after their *call date*, for their *call price* (in XBJ),
+their present issuer, after their *call date*, for their *call price* (in DLA),
 these values being set at the time of the asset’s first issuance.
 
 Callable assets may be called back after their call date has been first passed
 by a block in the blockchain.
 
 Call prices are specified to six decimal place of precision, and are a ratio of
-XBJ and the unit (not satoshis) of the callable asset.
+DLA and the unit (not satoshis) of the callable asset.
 
 
 
@@ -124,7 +124,7 @@ XBJ and the unit (not satoshis) of the callable asset.
 * max int
 
 * oversend, overbet, overorder
-	* not wdcpay, callback (impossible, because of rounding), issuance (fragile!), dividend (?!)
+	* not ltcpay, callback (impossible, because of rounding), issuance (fragile!), dividend (?!)
 
 
 
@@ -142,15 +142,15 @@ XBJ and the unit (not satoshis) of the callable asset.
 `fee_provided_remaining` or `fee_required_remaining` are no longer positive
 quantities.
 
-Because order matches pending WDC payment may be expired, orders involving
-Worldcoin cannot be filled, but remain always with a status `open`.
+Because order matches pending LTC payment may be expired, orders involving
+Litecoin cannot be filled, but remain always with a status `open`.
 
 
 ## Message Types
 
 * Send
 * Order
-* WDCPay
+* LTCPay
 * Issue
 * Broadcast
 * Bet
@@ -162,12 +162,12 @@ Worldcoin cannot be filled, but remain always with a status `open`.
 
 ### Send
 
-A **send** message sends a quantity of any Bluejudy asset from the source
+A **send** message sends a quantity of any Czarcraft asset from the source
 address to the destination address. If the sender does not hold a sufficient
 quantity of that asset at the time that the send message is parsed (in the
 sequence of transactions), then the send is filled partially.
 
-bluejudyd supports sending worldcoins, for which no data output is used.
+czarcraftd supports sending litecoins, for which no data output is used.
 
 
 ### Order
@@ -176,29 +176,29 @@ An ‘order’ is an offer to *give* a particular quantity of a particular asset
 and *get* some quantity of some other asset in return. No distinction is drawn
 between a ‘buy order’ and a ‘sell order’. The assets being given are escrowed
 away immediately upon the order being parsed. That is, if someone wants to give
-1 XBJ for 2 WDC, then as soon as he publishes that order, his balance of XBJ is
+1 DLA for 2 LTC, then as soon as he publishes that order, his balance of DLA is
 reduced by one.
 
 When an order is seen in the blockchain, the protocol attempts to match it,
 deterministically, with another open order previously seen. Two matched orders
 are called a ‘order match’. If either of a order match’s constituent orders
-involve Worldcoin, then the order match is assigned the status ‘pending’ until
-the necessary WDCPay transaction is published. Otherwise, the trade is
+involve Litecoin, then the order match is assigned the status ‘pending’ until
+the necessary LTCPay transaction is published. Otherwise, the trade is
 completed immediately, with the protocol itself assigning the participating
 addresses their new balances.
 
 All orders are *limit orders*: an asking price is specified in the ratio of how
 much of one would like to get and give; an order is matched to the open order
 with the best price below the limit, and the order match is made at *that*
-price. That is, if there is one open order to sell at .11 XBJ/ASST, another
-at .12 XBJ/ASST, and another at .145 XBJ/WDC, then a new order to buy at .14
-XBJ/ASST will be matched to the first sell order first, and the XBJ and WDC
-will be traded at a price of .11 XBJ/ASST, and then if any are left, they’ll be
-sold at .12 XBJ/ASST. If two existing orders have the same price, then the one
+price. That is, if there is one open order to sell at .11 DLA/ASST, another
+at .12 DLA/ASST, and another at .145 DLA/LTC, then a new order to buy at .14
+DLA/ASST will be matched to the first sell order first, and the DLA and LTC
+will be traded at a price of .11 DLA/ASST, and then if any are left, they’ll be
+sold at .12 DLA/ASST. If two existing orders have the same price, then the one
 made earlier will match first.
 
 All orders allow for partial execution; there are no all‐or‐none orders. If, in
-the previous example, the party buying the worldcoins wanted to buy more than the
+the previous example, the party buying the litecoins wanted to buy more than the
 first sell offer had available, then the rest of the buy order would be filled
 by the latter existing order. After all possible order matches are made, the
 current (buy) order is listed as an open order itself. If there exist multiple
@@ -209,26 +209,26 @@ Open orders expire after they have been open for a user‐specified number of
 blocks. When an order expires, all escrowed funds are returned to the parties
 that originally had them.
 
-Order Matches waiting for Worldcoin payments expire after twenty blocks
+Order Matches waiting for Litecoin payments expire after twenty blocks
 (originally otherwise); the constituent orders are replenished.
 
 In general, there can be no such thing as a fake order, because the assets that
 each party is offering are stored in escrow. However, it is impossible to
-escrow worldcoins, so those attempting to buy worldcoins may ask that only orders
-which pay a fee in worldcoins to Worldcoin miners be matched to their own. On the
-other hand, when creating an order to sell worldcoins, a user may pay whatever
+escrow litecoins, so those attempting to buy litecoins may ask that only orders
+which pay a fee in litecoins to Litecoin miners be matched to their own. On the
+other hand, when creating an order to sell litecoins, a user may pay whatever
 fee he likes. Partial orders pay partial fees. These fees are designated in the
-code as `fee_required` and `fee_provided`, and as orders involving WDC are
+code as `fee_required` and `fee_provided`, and as orders involving LTC are
 matched (expired), these fees (required and provided) are debited
 (sometimes replenished), in proportion to the fraction of the order that is
-matched. That is, if an order to sell 1 WDC has a `fee_provided` of 0.01 WDC (a
-1%), and that order matches for 0.5 WDC initially, then the
-`fee_provided_remaining` for that order will thenceforth be 0.005 WDC.
-*Provided* fees, however, are not replenished upon failure to make WDC
+matched. That is, if an order to sell 1 LTC has a `fee_provided` of 0.01 LTC (a
+1%), and that order matches for 0.5 LTC initially, then the
+`fee_provided_remaining` for that order will thenceforth be 0.005 LTC.
+*Provided* fees, however, are not replenished upon failure to make LTC
 payments, or their anti‐trolling effect would be voided.
 
-Payments of worldcoins to close order matches waiting for worldcoins are done with
-the a **WDCpay** message, which stores in its data field only the string
+Payments of litecoins to close order matches waiting for litecoins are done with
+the a **LTCpay** message, which stores in its data field only the string
 concatenation of the transaction hashes which compose the Order Match which it
 fulfils.
 
@@ -250,7 +250,7 @@ description to ‘LOCK’ (case‐insensitive).
 
 Issuances of any non‐zero quantity, that is, issuances which do not merely
 change, e.g., the description of the asset, involve a debit (and destruction)
-of now 0.5 XBJ.
+of now 0.5 DLA.
 
 Asset descriptions may be of arbitrary length.
 
@@ -332,13 +332,13 @@ Feed fees are deducted from the final settlement amount.
 
 ### Dividend
 
-A dividend payment is a payment of some quantity of any Bluejudy asset
-(including WDC) to every holder of a an asset (except WDC or XBJ) in proportion
+A dividend payment is a payment of some quantity of any Czarcraft asset
+(including LTC) to every holder of a an asset (except LTC or DLA) in proportion
 to the size of their holdings. Dividend‐yielding assets may be either divisible
 or indivisible. A dividend payment to any asset may originate from any address.
 The asset for dividend payments and the assets whose holders receive the
-payments may be the same. Worldcoin dividend payments do not employ the
-Bluejudy protocol and so are larger and more expensive (in fees) than all
+payments may be the same. Litecoin dividend payments do not employ the
+Czarcraft protocol and so are larger and more expensive (in fees) than all
 other dividend payments.
 
 * TODO: dividends on escrowed funds
@@ -348,16 +348,16 @@ There is a small fee per recipient with dividends, to prevent SPAM.
 
 ### Burn
 
-Balances in Bluejudy’s native currency, ‘XBJ’, will be initialised by
-‘burning’ worldcoins in miners’ fees during a particular period of time using the
-a **burn** message type. The number of XBJ earned per worldcoin is calculated
+Balances in Czarcraft’s native currency, ‘DLA’, will be initialised by
+‘burning’ litecoins in miners’ fees during a particular period of time using the
+a **burn** message type. The number of DLA earned per litecoin is calculated
 thus: 
 
-	XBJ_EARNED = WDC_BURNED * (1000 * (1 + .5 * ((END_BLOCK - CURRENT_BLOCK) / (END_BLOCK - START_BLOCK))
+	DLA_EARNED = LTC_BURNED * (1000 * (1 + .5 * ((END_BLOCK - CURRENT_BLOCK) / (END_BLOCK - START_BLOCK))
 
 `END_BLOCK` is the block after which the burn period is over (**block #283810**) and
 `START_BLOCK` is the block with which the burn period begins (**block #278310**). The earlier the
-burn, the better the price, which may be between 1000 and 1500 XBJ/WDC.
+burn, the better the price, which may be between 1000 and 1500 DLA/LTC.
 
 Burn messages have precisely the string ‘ProofOfBurn’ stored in the
 `OP_RETURN` output.
@@ -371,7 +371,7 @@ Burn messages have precisely the string ‘ProofOfBurn’ stored in the
 
 Open offers may be cancelled, which cancellation is irrevocable.
 
-A *cancel* message contains only the hash of the Worldcoin transaction that
+A *cancel* message contains only the hash of the Litecoin transaction that
 contains the order or bet to be cancelled. Only the address which made an offer
 may cancel it.
 
@@ -379,7 +379,7 @@ may cancel it.
 
 ### Callback
 
-*Callbacks are currently disabled on Bluejudy mainnet, as the logic by
+*Callbacks are currently disabled on Czarcraft mainnet, as the logic by
 which they are parsed is currently undergoing revision and testing.*
 
 
