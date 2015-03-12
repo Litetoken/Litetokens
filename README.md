@@ -1,22 +1,22 @@
-# The Czarcraft Protocol
+# The Litetokens Protocol
 
 ## Summary
 
-Czarcraft is a suite of financial tools in a protocol built on top of the
+Litetokens is a suite of financial tools in a protocol built on top of the
 Litecoin blockchain and using the blockchain as a service for the reliable
 publication and timestamping of its messages.
 
-The reference implementation is `czarcraftd`, which is hosted at
-<https://github.com/Czarcraft/czarcraftd>.
+The reference implementation is `litetokensd`, which is hosted at
+<https://github.com/Litetokens/litetokensd>.
 
-This document describes exclusively the latest version of the Czarcraft
-protocol. For historical protocol changes, see the czarcraftd CHANGELOG and
+This document describes exclusively the latest version of the Litetokens
+protocol. For historical protocol changes, see the litetokensd CHANGELOG and
 earlier versions of this document.
 
 
 ## Transactions
 
-Czarcraft messages have the following components:
+Litetokens messages have the following components:
 * Source addresses
 * Destination addresses (optional)
 * A quantity of litecoins sent from the sources to the destinations, if it exists.
@@ -24,18 +24,18 @@ Czarcraft messages have the following components:
   a block.
 * Some ‘data’, imbedded in specially constructed transaction outputs.
 
-Every Litecoin transaction carrying a Czarcraft transaction has the following
+Every Litecoin transaction carrying a Litetokens transaction has the following
 possible outputs: zero or more destination outputs, zero or more data outputs,
 and optional change outputs. All data outputs follow all destination outputs.
 Change outputs (outputs after the last data output) have no significance.
 
-For identification purposes, every Czarcraft transaction’s ‘data’ field is
-prefixed by the string ‘CZRCRAFT’, encoded in UTF‐8. This string is long enough
+For identification purposes, every Litetokens transaction’s ‘data’ field is
+prefixed by the string ‘XLTTOKEN’, encoded in UTF‐8. This string is long enough
 that transactions with outputs containing pseudo‐random data cannot be mistaken
-for valid Czarcraft transactions . In testing (i.e. using the TESTCOIN
-Czarcraft network on any blockchain), this string is ‘XX’.
+for valid Litetokens transactions . In testing (i.e. using the TESTCOIN
+Litetokens network on any blockchain), this string is ‘XX’.
 
-Czarcraft data may be stored in three different types of outputs, or in some
+Litetokens data may be stored in three different types of outputs, or in some
 combinations of those formats. All of the data is obfuscated by ARC4 encryption
 using the public key of the first sender as the encryption key.
 
@@ -47,12 +47,12 @@ length byte.
 The data may also be stored in `OP_RETURN` outputs or as fake pubkeyhashes.
 
 The existence of the destination outputs, and the significance of the size of
-the Litecoin fee and the Litecoins transacted, depend on the Czarcraft message
+the Litecoin fee and the Litecoins transacted, depend on the Litetokens message
 type, which is determined by the four bytes in the data field that immediately
 follow the identification prefix. The rest of the data have a formatting
 specific to the message type, described in the source code.
 
-The sources and destinations of a Czarcraft transaction are Litecoin
+The sources and destinations of a Litetokens transaction are Litecoin
 addresses, and may be either `OP_CHECKSIG` and `OP_CHECKMULTISIG` Litecoin
 ScriptPubkeys.
 
@@ -62,13 +62,13 @@ Orders, bets, order matches, bet matches and rock‐paper‐scissor matches are
 expired at the end of blocks.
 
 
-## Non‐Czarcraft transactions
+## Non‐Litetokens transactions
 
-czarcraftd supports the construction of two kinds of transactions that are
-not themselves considered Czarcraft transactions:
+litetokensd supports the construction of two kinds of transactions that are
+not themselves considered Litetokens transactions:
 
 * LTC sends
-* LTC dividends to Czarcraft assets
+* LTC dividends to Litetokens assets
 
 Neither of these two transactions is constructed with a data field.
 
@@ -162,12 +162,12 @@ Litecoin cannot be filled, but remain always with a status `open`.
 
 ### Send
 
-A **send** message sends a quantity of any Czarcraft asset from the source
+A **send** message sends a quantity of any Litetokens asset from the source
 address to the destination address. If the sender does not hold a sufficient
 quantity of that asset at the time that the send message is parsed (in the
 sequence of transactions), then the send is filled partially.
 
-czarcraftd supports sending litecoins, for which no data output is used.
+litetokensd supports sending litecoins, for which no data output is used.
 
 
 ### Order
@@ -332,13 +332,13 @@ Feed fees are deducted from the final settlement amount.
 
 ### Dividend
 
-A dividend payment is a payment of some quantity of any Czarcraft asset
+A dividend payment is a payment of some quantity of any Litetokens asset
 (including LTC) to every holder of a an asset (except LTC or DLA) in proportion
 to the size of their holdings. Dividend‐yielding assets may be either divisible
 or indivisible. A dividend payment to any asset may originate from any address.
 The asset for dividend payments and the assets whose holders receive the
 payments may be the same. Litecoin dividend payments do not employ the
-Czarcraft protocol and so are larger and more expensive (in fees) than all
+Litetokens protocol and so are larger and more expensive (in fees) than all
 other dividend payments.
 
 * TODO: dividends on escrowed funds
@@ -348,7 +348,7 @@ There is a small fee per recipient with dividends, to prevent SPAM.
 
 ### Burn
 
-Balances in Czarcraft’s native currency, ‘DLA’, will be initialised by
+Balances in Litetokens’s native currency, ‘DLA’, will be initialised by
 ‘burning’ litecoins in miners’ fees during a particular period of time using the
 a **burn** message type. The number of DLA earned per litecoin is calculated
 thus: 
@@ -379,7 +379,7 @@ may cancel it.
 
 ### Callback
 
-*Callbacks are currently disabled on Czarcraft mainnet, as the logic by
+*Callbacks are currently disabled on Litetokens mainnet, as the logic by
 which they are parsed is currently undergoing revision and testing.*
 
 
