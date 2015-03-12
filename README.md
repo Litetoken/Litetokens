@@ -84,7 +84,7 @@ No matching for orders, bets, rps.
 
 ## Assets
 
-All assets except LTC and DLA have the following properties:
+All assets except LTC and XLT have the following properties:
 
 * Asset name
 * Asset ID
@@ -99,7 +99,7 @@ All assets except LTC and DLA have the following properties:
 
 Asset names are strings of uppercase ASCII characters that, when encoded as a
 decimal integer, are greater than 26^3 and less than or equal to 256^8: all
-asset names, other than ‘LTC’ and ‘DLA’ must be at least four letters long;
+asset names, other than ‘LTC’ and ‘XLT’ must be at least four letters long;
 asset names may not begin with the character ‘A’. Thus, some thirteen‐character
 asset names are valid, but no fourteen‐character names are.
 
@@ -108,14 +108,14 @@ divisible to eight decimal places. Assets also come with descriptions, which
 may be changed at any time.
 
 Assets may be ‘callable’: callable assets may be forcibly ‘called back’ by
-their present issuer, after their *call date*, for their *call price* (in DLA),
+their present issuer, after their *call date*, for their *call price* (in XLT),
 these values being set at the time of the asset’s first issuance.
 
 Callable assets may be called back after their call date has been first passed
 by a block in the blockchain.
 
 Call prices are specified to six decimal place of precision, and are a ratio of
-DLA and the unit (not satoshis) of the callable asset.
+XLT and the unit (not satoshis) of the callable asset.
 
 
 
@@ -176,7 +176,7 @@ An ‘order’ is an offer to *give* a particular quantity of a particular asset
 and *get* some quantity of some other asset in return. No distinction is drawn
 between a ‘buy order’ and a ‘sell order’. The assets being given are escrowed
 away immediately upon the order being parsed. That is, if someone wants to give
-1 DLA for 2 LTC, then as soon as he publishes that order, his balance of DLA is
+1 XLT for 2 LTC, then as soon as he publishes that order, his balance of XLT is
 reduced by one.
 
 When an order is seen in the blockchain, the protocol attempts to match it,
@@ -190,11 +190,11 @@ addresses their new balances.
 All orders are *limit orders*: an asking price is specified in the ratio of how
 much of one would like to get and give; an order is matched to the open order
 with the best price below the limit, and the order match is made at *that*
-price. That is, if there is one open order to sell at .11 DLA/ASST, another
-at .12 DLA/ASST, and another at .145 DLA/LTC, then a new order to buy at .14
-DLA/ASST will be matched to the first sell order first, and the DLA and LTC
-will be traded at a price of .11 DLA/ASST, and then if any are left, they’ll be
-sold at .12 DLA/ASST. If two existing orders have the same price, then the one
+price. That is, if there is one open order to sell at .11 XLT/ASST, another
+at .12 XLT/ASST, and another at .145 XLT/LTC, then a new order to buy at .14
+XLT/ASST will be matched to the first sell order first, and the XLT and LTC
+will be traded at a price of .11 XLT/ASST, and then if any are left, they’ll be
+sold at .12 XLT/ASST. If two existing orders have the same price, then the one
 made earlier will match first.
 
 All orders allow for partial execution; there are no all‐or‐none orders. If, in
@@ -250,7 +250,7 @@ description to ‘LOCK’ (case‐insensitive).
 
 Issuances of any non‐zero quantity, that is, issuances which do not merely
 change, e.g., the description of the asset, involve a debit (and destruction)
-of now 0.5 DLA.
+of now 0.5 XLT.
 
 Asset descriptions may be of arbitrary length.
 
@@ -333,7 +333,7 @@ Feed fees are deducted from the final settlement amount.
 ### Dividend
 
 A dividend payment is a payment of some quantity of any Litetokens asset
-(including LTC) to every holder of a an asset (except LTC or DLA) in proportion
+(including LTC) to every holder of a an asset (except LTC or XLT) in proportion
 to the size of their holdings. Dividend‐yielding assets may be either divisible
 or indivisible. A dividend payment to any asset may originate from any address.
 The asset for dividend payments and the assets whose holders receive the
@@ -348,16 +348,16 @@ There is a small fee per recipient with dividends, to prevent SPAM.
 
 ### Burn
 
-Balances in Litetokens’s native currency, ‘DLA’, will be initialised by
+Balances in Litetokens’s native currency, ‘XLT’, will be initialised by
 ‘burning’ litecoins in miners’ fees during a particular period of time using the
-a **burn** message type. The number of DLA earned per litecoin is calculated
+a **burn** message type. The number of XLT earned per litecoin is calculated
 thus: 
 
-	DLA_EARNED = LTC_BURNED * (1000 * (1 + .5 * ((END_BLOCK - CURRENT_BLOCK) / (END_BLOCK - START_BLOCK))
+	XLT_EARNED = LTC_BURNED * (1000 * (1 + .5 * ((END_BLOCK - CURRENT_BLOCK) / (END_BLOCK - START_BLOCK))
 
 `END_BLOCK` is the block after which the burn period is over (**block #283810**) and
 `START_BLOCK` is the block with which the burn period begins (**block #278310**). The earlier the
-burn, the better the price, which may be between 1000 and 1500 DLA/LTC.
+burn, the better the price, which may be between 1000 and 1500 XLT/LTC.
 
 Burn messages have precisely the string ‘ProofOfBurn’ stored in the
 `OP_RETURN` output.
